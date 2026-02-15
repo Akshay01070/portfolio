@@ -38,35 +38,23 @@ const projects = [
         description:
             'A social coding companion that tracks LeetCode progress, enables competitive coding with friends, and provides curated problem recommendations.',
         tech: ['Next.js', 'TypeScript', 'PostgreSQL', 'Redis'],
-        
+        live: '#',
         github: 'https://github.com/Akshay01070/CodeSync',
     },
 ];
 
-function ProjectCard({ project, index }) {
-    const ref = useRef(null);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            },
-            { threshold: 0.15 }
-        );
-        if (ref.current) observer.observe(ref.current);
-        return () => observer.disconnect();
-    }, []);
-
+function ProjectCard({ project }) {
     return (
         <div
-            ref={ref}
-            className="reveal glow-card"
+            className="glow-card"
             style={{
                 padding: '28px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '16px',
-                transitionDelay: `${index * 0.1}s`,
+                gap: '14px',
+                width: '340px',
+                minWidth: '340px',
+                flexShrink: 0,
             }}
         >
             {/* Colored accent bar */}
@@ -91,7 +79,7 @@ function ProjectCard({ project, index }) {
 
             <p
                 style={{
-                    fontSize: '0.95rem',
+                    fontSize: '0.92rem',
                     color: 'var(--text-secondary)',
                     lineHeight: 1.7,
                     flex: 1,
@@ -122,31 +110,33 @@ function ProjectCard({ project, index }) {
 
             {/* Buttons */}
             <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
-                <a
-                    href={project.live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                        padding: '8px 20px',
-                        borderRadius: '8px',
-                        background: 'linear-gradient(135deg, var(--accent), var(--accent-blue))',
-                        color: '#fff',
-                        fontSize: '0.85rem',
-                        fontWeight: 600,
-                        textDecoration: 'none',
-                        transition: 'opacity 0.3s ease, transform 0.3s ease',
-                    }}
-                    onMouseEnter={(e) => {
-                        e.target.style.opacity = '0.85';
-                        e.target.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.target.style.opacity = '1';
-                        e.target.style.transform = 'translateY(0)';
-                    }}
-                >
-                    Live Demo
-                </a>
+                {project.live && project.live !== '#' && (
+                    <a
+                        href={project.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                            padding: '8px 20px',
+                            borderRadius: '8px',
+                            background: 'linear-gradient(135deg, var(--accent), var(--accent-blue))',
+                            color: '#fff',
+                            fontSize: '0.85rem',
+                            fontWeight: 600,
+                            textDecoration: 'none',
+                            transition: 'opacity 0.3s ease, transform 0.3s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.target.style.opacity = '0.85';
+                            e.target.style.transform = 'translateY(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.opacity = '1';
+                            e.target.style.transform = 'translateY(0)';
+                        }}
+                    >
+                        Live Demo
+                    </a>
+                )}
                 <a
                     href={project.github}
                     target="_blank"
@@ -180,6 +170,7 @@ function ProjectCard({ project, index }) {
 
 export default function Projects() {
     const ref = useRef(null);
+    const doubled = [...projects, ...projects];
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -193,7 +184,7 @@ export default function Projects() {
     }, []);
 
     return (
-        <section id="projects" className="section" style={{ justifyContent: 'center' }}>
+        <section id="projects" className="section-projects" style={{ justifyContent: 'center' }}>
             <div ref={ref} className="reveal">
                 <h2
                     style={{
@@ -207,18 +198,29 @@ export default function Projects() {
                     My <span className="gradient-text">Projects</span>
                 </h2>
 
+                {/* Marquee container */}
                 <div
                     style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                        gap: '24px',
-                        maxWidth: '1200px',
-                        margin: '0 auto',
+                        overflow: 'hidden',
+                        padding: '10px 0',
+                        maskImage:
+                            'linear-gradient(to right, transparent, black 5%, black 95%, transparent)',
+                        WebkitMaskImage:
+                            'linear-gradient(to right, transparent, black 5%, black 95%, transparent)',
                     }}
                 >
-                    {projects.map((project, i) => (
-                        <ProjectCard key={project.title} project={project} index={i} />
-                    ))}
+                    <div
+                        className="marquee-track"
+                        style={{
+                            animationDuration: '40s',
+                            gap: '24px',
+                            alignItems: 'stretch',
+                        }}
+                    >
+                        {doubled.map((project, i) => (
+                            <ProjectCard key={`${project.title}-${i}`} project={project} />
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

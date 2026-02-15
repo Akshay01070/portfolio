@@ -6,40 +6,40 @@ const projects = [
         description:
             'A comprehensive healthcare platform connecting patients with doctors through seamless appointment booking, video consultations, and medical records management.',
         tech: ['React', 'Node.js', 'MongoDB', 'WebRTC'],
-        live: '#',
-        github: '#',
+        live: 'https://medimeet-beige.vercel.app/',
+        github: 'https://github.com/Akshay01070/MediMeet',
     },
     {
         title: 'FinBoard',
         description:
             'A real-time financial dashboard for tracking stocks, crypto, and portfolio analytics with interactive charts, watchlists, and market insights.',
         tech: ['Next.js', 'TypeScript', 'Prisma', 'Chart.js'],
-        live: '#',
-        github: '#',
+        live: 'https://fin-board-dun.vercel.app/',
+        github: 'https://github.com/Akshay01070/FinBoard',
     },
     {
         title: 'Doubtify',
         description:
-            'An AI-powered doubt-solving platform where students can ask questions, get instant explanations, and collaborate with peers in real time.',
+            'A doubt-solving platform where students can ask questions and receive answers from their peers or teachers.',
         tech: ['React', 'Express', 'OpenAI', 'Socket.io'],
         live: '#',
-        github: '#',
+        github: 'https://github.com/Akshay01070/Doubtify',
     },
     {
         title: 'Trello Clone',
         description:
             'A feature-rich project management tool with drag-and-drop Kanban boards, task assignments, labels, and real-time collaboration capabilities.',
         tech: ['React', 'Node.js', 'MongoDB', 'DnD Kit'],
-        live: '#',
-        github: '#',
+        live: 'https://trello-vert-zeta.vercel.app/',
+        github: 'https://github.com/Akshay01070/Trello',
     },
     {
         title: 'LeetFriend',
         description:
             'A social coding companion that tracks LeetCode progress, enables competitive coding with friends, and provides curated problem recommendations.',
         tech: ['Next.js', 'TypeScript', 'PostgreSQL', 'Redis'],
-        live: '#',
-        github: '#',
+        
+        github: 'https://github.com/Akshay01070/CodeSync',
     },
 ];
 

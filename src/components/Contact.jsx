@@ -1,26 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
+import emailjs from '@emailjs/browser';
+
+// ─── EmailJS Configuration ─────────────────────────────────────
+// Replace these with your actual EmailJS credentials:
+// 1. Go to https://www.emailjs.com/ and sign up
+// 2. Add an email service (Gmail, Outlook, etc.) → copy the Service ID
+// 3. Create an email template → copy the Template ID
+// 4. Go to Account → copy your Public Key
+const EMAILJS_SERVICE_ID = 'service_ro9nkzp';
+const EMAILJS_TEMPLATE_ID = 'template_2wlz91a';
+const EMAILJS_PUBLIC_KEY = 'tbrk_prHpIAB1dih1';
+// ────────────────────────────────────────────────────────────────
 
 const socials = [
-    // {
-    //     name: 'Instagram',
-    //     href: '#',
-    //     svg: (
-    //         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    //             <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-    //             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-    //             <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-    //         </svg>
-    //     ),
-    // },
-    // {
-    //     name: 'Twitter',
-    //     href: '#',
-    //     svg: (
-    //         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    //             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    //         </svg>
-    //     ),
-    // },
     {
         name: 'GitHub',
         href: 'https://github.com/Akshay01070',
@@ -41,9 +33,74 @@ const socials = [
     },
 ];
 
+/* ── Toast Notification Component ─────────────────────────────── */
+function Toast({ message, type, onClose }) {
+    const bgColor =
+        type === 'success'
+            ? 'linear-gradient(135deg, #10b981, #059669)'
+            : 'linear-gradient(135deg, #ef4444, #dc2626)';
+    const icon = type === 'success' ? '✓' : '✕';
+
+    return (
+        <div
+            style={{
+                position: 'fixed',
+                bottom: '32px',
+                right: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '16px 24px',
+                borderRadius: '12px',
+                background: bgColor,
+                color: '#fff',
+                fontSize: '0.95rem',
+                fontWeight: 600,
+                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                zIndex: 9999,
+                animation: 'toastSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+        >
+            <span
+                style={{
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.85rem',
+                    fontWeight: 800,
+                }}
+            >
+                {icon}
+            </span>
+            {message}
+            <button
+                onClick={onClose}
+                style={{
+                    marginLeft: '8px',
+                    background: 'none',
+                    border: 'none',
+                    color: 'rgba(255,255,255,0.7)',
+                    cursor: 'pointer',
+                    fontSize: '1.1rem',
+                    padding: '0 4px',
+                }}
+            >
+                ×
+            </button>
+        </div>
+    );
+}
+
 export default function Contact() {
     const ref = useRef(null);
+    const formRef = useRef(null);
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [sending, setSending] = useState(false);
+    const [toast, setToast] = useState(null); // { message, type }
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -56,15 +113,43 @@ export default function Contact() {
         return () => observer.disconnect();
     }, []);
 
+    // Auto-dismiss toast after 5 seconds
+    useEffect(() => {
+        if (!toast) return;
+        const timer = setTimeout(() => setToast(null), 5000);
+        return () => clearTimeout(timer);
+    }, [toast]);
+
     const handleChange = (e) => {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Hook up to email service / API later
-        alert('Message sent! (hook up your backend)');
-        setFormData({ name: '', email: '', message: '' });
+        setSending(true);
+
+        try {
+            await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_TEMPLATE_ID,
+                {
+                    from_name: formData.name,
+                    from_email: formData.email,
+                    message: formData.message,
+                },
+                EMAILJS_PUBLIC_KEY
+            );
+            setToast({ message: 'Message sent successfully!', type: 'success' });
+            setFormData({ name: '', email: '', message: '' });
+        } catch (error) {
+            console.error('EmailJS error:', error);
+            setToast({
+                message: 'Failed to send message. Please try again.',
+                type: 'error',
+            });
+        } finally {
+            setSending(false);
+        }
     };
 
     const inputStyle = {
@@ -93,7 +178,7 @@ export default function Contact() {
                         color: 'var(--text-primary)',
                     }}
                 >
-                   <span className="gradient-text">Connect</span>
+                    <span className="gradient-text">Connect</span>
                 </h2>
 
                 <form
@@ -180,28 +265,54 @@ export default function Contact() {
 
                     <button
                         type="submit"
+                        disabled={sending}
                         style={{
                             padding: '14px',
                             borderRadius: '10px',
                             border: 'none',
-                            background: 'linear-gradient(135deg, var(--accent), var(--accent-blue))',
+                            background: sending
+                                ? 'rgba(255,255,255,0.1)'
+                                : 'linear-gradient(135deg, var(--accent), var(--accent-blue))',
                             color: '#fff',
                             fontSize: '1rem',
                             fontWeight: 700,
                             fontFamily: 'var(--font-body)',
-                            cursor: 'pointer',
+                            cursor: sending ? 'not-allowed' : 'pointer',
                             transition: 'opacity 0.3s ease, transform 0.3s ease',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '10px',
+                            opacity: sending ? 0.7 : 1,
                         }}
                         onMouseEnter={(e) => {
-                            e.target.style.opacity = '0.9';
-                            e.target.style.transform = 'translateY(-2px)';
+                            if (!sending) {
+                                e.currentTarget.style.opacity = '0.9';
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                            }
                         }}
                         onMouseLeave={(e) => {
-                            e.target.style.opacity = '1';
-                            e.target.style.transform = 'translateY(0)';
+                            if (!sending) {
+                                e.currentTarget.style.opacity = '1';
+                                e.currentTarget.style.transform = 'translateY(0)';
+                            }
                         }}
                     >
-                        Send Message
+                        {sending && (
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                                style={{ animation: 'spin 1s linear infinite' }}
+                            >
+                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                            </svg>
+                        )}
+                        {sending ? 'Sending...' : 'Send Message'}
                     </button>
                 </form>
 
@@ -239,6 +350,27 @@ export default function Contact() {
                     ))}
                 </div>
             </div>
+
+            {/* Toast notification */}
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
+
+            {/* Keyframe animations */}
+            <style>{`
+                @keyframes toastSlideIn {
+                    from { transform: translateX(120%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+            `}</style>
         </section>
     );
 }

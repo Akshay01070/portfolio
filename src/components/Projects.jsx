@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 
+// To use real screenshots: place images in public/projects/ and set the image field
+// e.g. image: '/projects/medimeet.png'
 const projects = [
     {
         title: 'MediMeet',
@@ -8,6 +10,8 @@ const projects = [
         tech: ['React', 'Node.js', 'MongoDB', 'WebRTC'],
         live: 'https://medimeet-beige.vercel.app/',
         github: 'https://github.com/Akshay01070/MediMeet',
+        image: '/projects/medimeet.png',
+        gradient: 'linear-gradient(135deg, #667eea, #764ba2)',
     },
     {
         title: 'FinBoard',
@@ -16,6 +20,8 @@ const projects = [
         tech: ['Next.js', 'TypeScript', 'Prisma', 'Chart.js'],
         live: 'https://fin-board-dun.vercel.app/',
         github: 'https://github.com/Akshay01070/FinBoard',
+        image: '/projects/finboard.png',
+        gradient: 'linear-gradient(135deg, #f093fb, #f5576c)',
     },
     {
         title: 'Doubtify',
@@ -24,6 +30,8 @@ const projects = [
         tech: ['React', 'Express', 'OpenAI', 'Socket.io'],
         live: '#',
         github: 'https://github.com/Akshay01070/Doubtify',
+        image: null,
+        gradient: 'linear-gradient(135deg, #4facfe, #00f2fe)',
     },
     {
         title: 'Trello Clone',
@@ -32,6 +40,8 @@ const projects = [
         tech: ['React', 'Node.js', 'MongoDB', 'DnD Kit'],
         live: 'https://trello-vert-zeta.vercel.app/',
         github: 'https://github.com/Akshay01070/Trello',
+        image: '/projects/trello.png',
+        gradient: 'linear-gradient(135deg, #43e97b, #38f9d7)',
     },
     {
         title: 'LeetFriend',
@@ -40,129 +50,171 @@ const projects = [
         tech: ['Next.js', 'TypeScript', 'PostgreSQL', 'Redis'],
         live: '#',
         github: 'https://github.com/Akshay01070/CodeSync',
+        image: null,
+        gradient: 'linear-gradient(135deg, #fa709a, #fee140)',
     },
 ];
 
 function ProjectCard({ project }) {
+    const initials = project.title
+        .split(' ')
+        .map((w) => w[0])
+        .join('')
+        .toUpperCase();
+
     return (
         <div
             className="glow-card"
             style={{
-                padding: '28px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '14px',
-                width: '340px',
-                minWidth: '340px',
+                width: '360px',
+                minWidth: '360px',
                 flexShrink: 0,
+                overflow: 'hidden',
             }}
         >
-            {/* Colored accent bar */}
+            {/* Preview image / gradient placeholder */}
             <div
                 style={{
-                    height: '4px',
-                    width: '50px',
-                    borderRadius: '999px',
-                    background: 'linear-gradient(90deg, var(--accent), var(--accent-blue))',
-                }}
-            />
-
-            <h3
-                style={{
-                    fontSize: '1.4rem',
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 700,
+                    width: '100%',
+                    height: '180px',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    background: project.image ? 'var(--bg-card)' : project.gradient,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                 }}
             >
-                {project.title}
-            </h3>
-
-            <p
-                style={{
-                    fontSize: '0.92rem',
-                    color: 'var(--text-secondary)',
-                    lineHeight: 1.7,
-                    flex: 1,
-                }}
-            >
-                {project.description}
-            </p>
-
-            {/* Tech badges */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {project.tech.map((t) => (
-                    <span
-                        key={t}
+                {project.image ? (
+                    <img
+                        src={project.image}
+                        alt={`${project.title} preview`}
                         style={{
-                            fontSize: '0.78rem',
-                            padding: '4px 12px',
-                            borderRadius: '999px',
-                            background: 'rgba(139, 92, 246, 0.12)',
-                            color: 'var(--accent-hover)',
-                            fontWeight: 500,
-                            border: '1px solid rgba(139, 92, 246, 0.2)',
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            transition: 'transform 0.4s ease',
+                        }}
+                        onMouseEnter={(e) => (e.target.style.transform = 'scale(1.05)')}
+                        onMouseLeave={(e) => (e.target.style.transform = 'scale(1)')}
+                    />
+                ) : (
+                    <span
+                        style={{
+                            fontSize: '3rem',
+                            fontWeight: 900,
+                            fontFamily: 'var(--font-heading)',
+                            color: 'rgba(255,255,255,0.35)',
+                            letterSpacing: '0.1em',
+                            userSelect: 'none',
                         }}
                     >
-                        {t}
+                        {initials}
                     </span>
-                ))}
+                )}
             </div>
 
-            {/* Buttons */}
-            <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
-                {project.live && project.live !== '#' && (
+            <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '14px', flex: 1 }}>
+
+                <h3
+                    style={{
+                        fontSize: '1.4rem',
+                        fontFamily: 'var(--font-heading)',
+                        fontWeight: 700,
+                    }}
+                >
+                    {project.title}
+                </h3>
+
+                <p
+                    style={{
+                        fontSize: '0.92rem',
+                        color: 'var(--text-secondary)',
+                        lineHeight: 1.7,
+                        flex: 1,
+                    }}
+                >
+                    {project.description}
+                </p>
+
+                {/* Tech badges */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {project.tech.map((t) => (
+                        <span
+                            key={t}
+                            style={{
+                                fontSize: '0.78rem',
+                                padding: '4px 12px',
+                                borderRadius: '999px',
+                                background: 'rgba(139, 92, 246, 0.12)',
+                                color: 'var(--accent-hover)',
+                                fontWeight: 500,
+                                border: '1px solid rgba(139, 92, 246, 0.2)',
+                            }}
+                        >
+                            {t}
+                        </span>
+                    ))}
+                </div>
+
+                {/* Buttons */}
+                <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+                    {project.live && project.live !== '#' && (
+                        <a
+                            href={project.live}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                padding: '8px 20px',
+                                borderRadius: '8px',
+                                background: 'linear-gradient(135deg, var(--accent), var(--accent-blue))',
+                                color: '#fff',
+                                fontSize: '0.85rem',
+                                fontWeight: 600,
+                                textDecoration: 'none',
+                                transition: 'opacity 0.3s ease, transform 0.3s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.opacity = '0.85';
+                                e.target.style.transform = 'translateY(-2px)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.opacity = '1';
+                                e.target.style.transform = 'translateY(0)';
+                            }}
+                        >
+                            Live Demo
+                        </a>
+                    )}
                     <a
-                        href={project.live}
+                        href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
                             padding: '8px 20px',
                             borderRadius: '8px',
-                            background: 'linear-gradient(135deg, var(--accent), var(--accent-blue))',
-                            color: '#fff',
+                            background: 'transparent',
+                            color: 'var(--text-primary)',
                             fontSize: '0.85rem',
                             fontWeight: 600,
                             textDecoration: 'none',
-                            transition: 'opacity 0.3s ease, transform 0.3s ease',
+                            border: '1px solid var(--border-subtle)',
+                            transition: 'border-color 0.3s ease, transform 0.3s ease',
                         }}
                         onMouseEnter={(e) => {
-                            e.target.style.opacity = '0.85';
+                            e.target.style.borderColor = 'var(--accent)';
                             e.target.style.transform = 'translateY(-2px)';
                         }}
                         onMouseLeave={(e) => {
-                            e.target.style.opacity = '1';
+                            e.target.style.borderColor = 'var(--border-subtle)';
                             e.target.style.transform = 'translateY(0)';
                         }}
                     >
-                        Live Demo
+                        GitHub Repo
                     </a>
-                )}
-                <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                        padding: '8px 20px',
-                        borderRadius: '8px',
-                        background: 'transparent',
-                        color: 'var(--text-primary)',
-                        fontSize: '0.85rem',
-                        fontWeight: 600,
-                        textDecoration: 'none',
-                        border: '1px solid var(--border-subtle)',
-                        transition: 'border-color 0.3s ease, transform 0.3s ease',
-                    }}
-                    onMouseEnter={(e) => {
-                        e.target.style.borderColor = 'var(--accent)';
-                        e.target.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.target.style.borderColor = 'var(--border-subtle)';
-                        e.target.style.transform = 'translateY(0)';
-                    }}
-                >
-                    GitHub Repo
-                </a>
+                </div>
             </div>
         </div>
     );

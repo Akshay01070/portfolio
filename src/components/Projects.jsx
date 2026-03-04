@@ -34,7 +34,7 @@ const projects = [
         gradient: 'linear-gradient(135deg, #4facfe, #00f2fe)',
     },
     {
-        title: 'Trello Clone',
+        title: 'TaskFlow',
         description:
             'A feature-rich project management tool with drag-and-drop Kanban boards, task assignments, labels, and real-time collaboration capabilities.',
         tech: ['React', 'Node.js', 'MongoDB', 'DnD Kit'],

@@ -40,7 +40,7 @@ const projects = [
         tech: ['React', 'Node.js', 'MongoDB', 'DnD Kit'],
         live: 'https://trello-vert-zeta.vercel.app/',
         github: 'https://github.com/Akshay01070/Trello',
-        image: '/projects/trello.png',
+        image: '/projects/trello1.png',
         gradient: 'linear-gradient(135deg, #43e97b, #38f9d7)',
     },
     {

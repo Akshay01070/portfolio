@@ -2,21 +2,23 @@
 
 /* ──────────────────── Custom Properties ──────────────────── */
 :root {
-  --bg-primary: #0a0a0f;
-  --bg-card: #12121a;
-  --bg-card-hover: #1a1a28;
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-glow: rgba(139, 92, 246, 0.3);
-  --text-primary: #f0f0f5;
-  --text-secondary: #9ca3af;
-  --accent: #8b5cf6;
-  --accent-hover: #a78bfa;
-  --accent-blue: #3b82f6;
-  --font-heading: 'Outfit', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-card: #0d0d0d;
+  --bg-card-hover: #141414;
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-orange: rgba(255, 77, 41, 0.35);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.5);
+  --text-muted: rgba(255, 255, 255, 0.28);
+  --accent: #ff4d29;
+  --accent-hover: #ff6b4a;
+  --accent-dim: rgba(255, 77, 41, 0.15);
+  --font-display: 'Impact', 'Haettenschweiler', 'Arial Narrow Bold', sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
 }
 
-/* ──────────────────── Global Reset / Base ──────────────────── */
+/* ──────────────────── Global Reset ──────────────────── */
 *,
 *::before,
 *::after {
@@ -38,20 +40,27 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  selection: {
+    background: var(--accent);
+    color: white;
+  }
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
 }
 
 /* ──────────────────── Scrollbar ──────────────────── */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
-
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: #000;
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--accent);
-  border-radius: 999px;
+  border-radius: 0;
 }
 
 /* ──────────────────── Section Spacing ──────────────────── */
@@ -62,11 +71,15 @@ body {
   flex-direction: column;
   justify-content: center;
 }
-.section-projects {
+
+.section-hero {
+  height: 100vh;
   min-height: 100vh;
-  padding: 100px 3%;
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
 }
 
@@ -78,122 +91,79 @@ body {
 
 /* ──────────────────── Animations ──────────────────── */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-40px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 @keyframes marqueeReverse {
-  0% {
-    transform: translateX(-50%);
-  }
-
-  100% {
-    transform: translateX(0);
-  }
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
 }
 
 @keyframes cursorBlink {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
-  }
-}
-
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
 
 @keyframes gradientMove {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-/* Utility: reveal on scroll */
+@keyframes toastSlideIn {
+  from { transform: translateX(120%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.18; }
+  50%       { opacity: 0.28; }
+}
+
+/* ──────────────────── Utility Classes ──────────────────── */
 .reveal {
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.8s ease, transform 0.8s ease;
 }
-
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Marquee rows */
+/* Marquee */
 .marquee-track {
   display: flex;
   width: max-content;
   animation: marquee 30s linear infinite;
 }
-
 .marquee-track.reverse {
   animation: marqueeReverse 30s linear infinite;
 }
-
 .marquee-track:hover {
   animation-play-state: paused;
 }
 
-/* Gradient text utility */
-.gradient-text {
-  background: linear-gradient(135deg, var(--accent), var(--accent-blue));
-  background-size: 200% 200%;
-  animation: gradientMove 4s ease infinite;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Orange accent text */
+.accent-text {
+  color: var(--accent);
+  font-style: italic;
 }
 
 /* Typing cursor */
@@ -204,16 +174,133 @@ body {
   color: var(--accent);
 }
 
-/* Glow border card */
-.glow-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 16px;
-  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+/* Section label / eyebrow */
+.section-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  margin-bottom: 12px;
 }
 
-.glow-card:hover {
-  border-color: var(--border-glow);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.1);
+/* Display headline */
+.display-heading {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+/* Barcode visual */
+.barcode {
+  background: repeating-linear-gradient(
+    90deg,
+    #000 0px, #000 1px,
+    #fff 1px, #fff 3px
+  );
+}
+
+/* ──────────────────── Card ──────────────────── */
+.dark-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+.dark-card:hover {
+  border-color: var(--border-orange);
+  box-shadow: 0 0 30px rgba(255, 77, 41, 0.06);
+}
+
+/* ──────────────────── Ticket Styles ──────────────────── */
+.ticket {
+  background-color: white;
+  color: black;
+  width: 220px;
+  height: 80px;
+  padding: 0.5rem 0.75rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.6rem;
+  position: absolute;
+  box-shadow: 4px 4px 15px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+  z-index: 40;
+  user-select: none;
+  clip-path: polygon(
+    5px 0%, calc(100% - 5px) 0%, 100% 10%, 100% 30%, 95% 40%, 95% 60%, 100% 70%, 100% 90%,
+    calc(100% - 5px) 100%, 5px 100%, 0% 90%, 0% 70%, 5% 60%, 5% 40%, 0% 30%, 0% 10%
+  );
+  will-change: transform;
+  cursor: grab;
+  touch-action: none;
+}
+.ticket:active {
+  cursor: grabbing;
+}
+
+.ticket-left-section {
+  border-right: 1px dashed #000;
+  padding-right: 8px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 65px;
+}
+
+.ticket-header-small {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.5rem;
+  margin-bottom: 2px;
+  color: #666;
+}
+
+.ticket-title-small {
+  font-family: 'Impact', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.ticket-content-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.ticket-category-small {
+  font-size: 0.45rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.ticket-details-small {
+  font-size: 0.55rem;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ticket-barcode-vertical {
+  height: 100%;
+  width: 12px;
+  background: repeating-linear-gradient(
+    0deg,
+    #000 0px, #000 1px,
+    #fff 1px, #fff 3px
+  );
+  margin-left: auto;
+  flex-shrink: 0;
 }

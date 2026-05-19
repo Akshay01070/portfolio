@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import './Navbar.css';
 
 const navLinks = [
     { label: 'About', href: '#about' },
@@ -7,9 +8,16 @@ const navLinks = [
     { label: 'Contact', href: '#contact' },
 ];
 
+const socialLinks = [
+    { label: 'GitHub', href: 'https://github.com/Akshay01070' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/akshay-shinde-2ba824221/' },
+    { label: 'LeetCode', href: 'https://leetcode.com/u/akshay582004/' },
+];
+
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState('');
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -32,11 +40,25 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const handleClick = (e, href) => {
+    useEffect(() => {
+        if (!menuOpen) return;
+        document.body.style.overflow = 'hidden';
+        const onKey = (e) => {
+            if (e.key === 'Escape') setMenuOpen(false);
+        };
+        window.addEventListener('keydown', onKey);
+        return () => {
+            document.body.style.overflow = '';
+            window.removeEventListener('keydown', onKey);
+        };
+    }, [menuOpen]);
+
+    const handleClick = useCallback((e, href) => {
         e.preventDefault();
         const el = document.querySelector(href);
         if (el) el.scrollIntoView({ behavior: 'smooth' });
-    };
+        setMenuOpen(false);
+    }, []);
 
     return (
         <>
@@ -88,8 +110,9 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* Centered nav pill */}
+            {/* Centered nav pill (desktop) */}
             <nav
+                className="navbar-desktop-pill"
                 style={{
                     position: 'fixed',
                     top: scrolled ? '12px' : '20px',
@@ -147,8 +170,9 @@ export default function Navbar() {
                 })}
             </nav>
 
-            {/* Top-right status */}
+            {/* Top-right status (desktop) */}
             <div
+                className="navbar-desktop-social"
                 style={{
                     position: 'fixed',
                     top: '24px',
@@ -172,57 +196,86 @@ export default function Navbar() {
                     <div>Remote / Global</div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-end' }}>
-                    <a
-                        href="https://github.com/Akshay01070"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                            fontSize: '0.6rem',
-                            letterSpacing: '0.18em',
-                            textTransform: 'uppercase',
-                            color: 'rgba(255,255,255,0.45)',
-                            textDecoration: 'none',
-                            transition: 'color 0.2s ease',
-                        }}
-                        onMouseEnter={(e) => (e.target.style.color = '#ff4d29')}
-                        onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.45)')}
-                    >
-                        GitHub
-                    </a>
-                    <a
-                        href="https://www.linkedin.com/in/akshay-shinde-2ba824221/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                            fontSize: '0.6rem',
-                            letterSpacing: '0.18em',
-                            textTransform: 'uppercase',
-                            color: 'rgba(255,255,255,0.45)',
-                            textDecoration: 'none',
-                            transition: 'color 0.2s ease',
-                        }}
-                        onMouseEnter={(e) => (e.target.style.color = '#ff4d29')}
-                        onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.45)')}
-                    >
-                        LinkedIn
-                    </a>
-                    <a
-                        href="https://leetcode.com/u/akshay582004/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                            fontSize: '0.6rem',
-                            letterSpacing: '0.18em',
-                            textTransform: 'uppercase',
-                            color: 'rgba(255,255,255,0.45)',
-                            textDecoration: 'none',
-                            transition: 'color 0.2s ease',
-                        }}
-                        onMouseEnter={(e) => (e.target.style.color = '#ff4d29')}
-                        onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.45)')}
-                    >
-                        LeetCode
-                    </a>
+                    {socialLinks.map((s) => (
+                        <a
+                            key={s.href}
+                            href={s.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                fontSize: '0.6rem',
+                                letterSpacing: '0.18em',
+                                textTransform: 'uppercase',
+                                color: 'rgba(255,255,255,0.45)',
+                                textDecoration: 'none',
+                                transition: 'color 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => (e.target.style.color = '#ff4d29')}
+                            onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.45)')}
+                        >
+                            {s.label}
+                        </a>
+                    ))}
+                </div>
+            </div>
+
+            {/* Mobile: hamburger + slide-out panel */}
+            <div className="navbar-mobile-only">
+                <button
+                    type="button"
+                    className={`navbar-mobile-trigger${menuOpen ? ' is-open' : ''}`}
+                    aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+                    aria-expanded={menuOpen}
+                    aria-controls="navbar-mobile-panel"
+                    onClick={() => setMenuOpen((o) => !o)}
+                >
+                    <span className="navbar-mobile-trigger-line" aria-hidden />
+                    <span className="navbar-mobile-trigger-line" aria-hidden />
+                    <span className="navbar-mobile-trigger-line" aria-hidden />
+                </button>
+
+                <div
+                    className={`navbar-mobile-backdrop${menuOpen ? ' is-open' : ''}`}
+                    aria-hidden={!menuOpen}
+                    onClick={() => setMenuOpen(false)}
+                />
+
+                <div
+                    id="navbar-mobile-panel"
+                    className={`navbar-mobile-panel${menuOpen ? ' is-open' : ''}`}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Site navigation"
+                    inert={!menuOpen ? true : undefined}
+                >
+                    {navLinks.map((link) => {
+                        const isActive = activeSection === link.href.slice(1);
+                        return (
+                            <a
+                                key={link.href}
+                                href={link.href}
+                                className={isActive ? 'nav-mobile-active' : undefined}
+                                onClick={(e) => handleClick(e, link.href)}
+                            >
+                                {link.label}
+                            </a>
+                        );
+                    })}
+
+                    <div className="navbar-mobile-section-label">Connect</div>
+                    <div className="navbar-mobile-social">
+                        {socialLinks.map((s) => (
+                            <a
+                                key={s.href}
+                                href={s.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                {s.label}
+                            </a>
+                        ))}
+                    </div>
                 </div>
             </div>
         </>

@@ -185,7 +185,7 @@ export default function Hero() {
                 </p>
 
                 <a
-                    href="/nts-platform - Copy.zip"
+                    href="/Akshay Shinde, IIIT Gwalior.pdf"
                     download
                     style={{
                         display: 'inline-block',
